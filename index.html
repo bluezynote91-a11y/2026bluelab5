@@ -37,7 +37,7 @@
             background: radial-gradient(circle, #333 0%, #111 30%, #333 31%, #111 35%, #000 100%);
             border-radius: 50%;
             animation: spin 12s linear infinite;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             position: relative;
         }
         .lp-label {
@@ -58,20 +58,20 @@
         .vintage-card {
             background-color: var(--vintage-paper);
             border: 1px solid rgba(0,0,0,0.1);
-            box-shadow: 5px 5px 0px rgba(0,0,0,0.04);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.03);
             transition: all 0.3s ease;
         }
 
         .peace-check:checked + label {
             color: var(--active-bright-gold);
-            transform: translateY(-4px) scale(1.15);
-            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.7));
+            transform: translateY(-3px) scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
         }
 
         .focus-check:checked + label {
             color: #3b82f6; 
-            transform: translateY(-4px) scale(1.15);
-            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.7));
+            transform: translateY(-3px) scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
         }
         
         .music-note-check:checked ~ .day-label {
@@ -127,13 +127,12 @@
 </head>
 <body class="p-4 md:p-6 typewriter-text h-screen flex flex-col justify-center items-center relative">
 
-    <!-- 훈장 전용 컬렉터 영역 (크기 키움) -->
+    <!-- 훈장 전용 컬렉터 영역 -->
     <div id="trophy-collector" class="fixed right-3 md:right-8 top-10 bottom-10 w-16 md:w-24 flex flex-col gap-3 items-center z-50 overflow-y-auto py-4"></div>
 
-    <!-- 메인 컨테이너 (너비 대폭 확장: max-w-4xl) -->
     <div class="max-w-4xl w-full space-y-3 mr-16 md:mr-32 lg:mr-40">
         
-        <!-- 헤더 섹션 (전체적으로 스케일업) -->
+        <!-- 헤더 섹션 -->
         <header class="relative flex items-center gap-6 py-2 border-b-2 border-zinc-200">
             <div class="relative w-24 h-24 flex-shrink-0">
                 <div class="lp-record w-full h-full border-[5px] border-black">
@@ -272,7 +271,13 @@
                 </div>
                 <div class="space-y-2.5 pt-2">
                     <div class="flex justify-between items-baseline px-1">
-                        <span class="text-[9px] font-bold text-zinc-600 mono uppercase tracking-[0.2em]">Milestone Progress</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[9px] font-bold text-zinc-600 mono uppercase tracking-[0.2em]">Milestone Progress</span>
+                            <!-- 성취 취소 버튼 추가 -->
+                            <button onclick="undoAchievement()" class="text-[8px] font-bold text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest underline decoration-zinc-700 underline-offset-2 mono">
+                                [UNDO]
+                            </button>
+                        </div>
                         <span id="gauge-status-label" class="text-2xl md:text-3xl font-black text-amber-400 mono tracking-tighter transition-all duration-500">0 / 100</span>
                     </div>
                     <div class="gauge-container w-full h-8 rounded-full overflow-hidden border-2 border-zinc-800">
@@ -291,7 +296,6 @@
     <script>
         lucide.createIcons();
 
-        // 오디오 컨텍스트
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const frequencies = [261.63, 293.66, 329.63, 349.23, 392.00];
 
@@ -381,6 +385,23 @@
             updateGauge();
         }
 
+        // 취소(UNDO) 로직 추가
+        function undoAchievement() {
+            if (earnedTrophies <= 0) return;
+            
+            const targetInput = document.getElementById('target-score-input');
+            let targetValue = parseInt(targetInput.innerText);
+            if (isNaN(targetValue) || targetValue <= 0) targetValue = 100;
+
+            // 훈장 개수 줄이고, 이전 소모 점수 복구
+            earnedTrophies--;
+            currentTotalScore += targetValue;
+            
+            renderTrophies();
+            updateGauge();
+            saveData();
+        }
+
         function triggerCelebration() {
             const statusLabel = document.getElementById('gauge-status-label');
             statusLabel.classList.add('score-pop-anim');
@@ -436,7 +457,7 @@
                 document.getElementById('focus-bonus-badge').classList.remove('hidden');
                 document.getElementById('focus-section').classList.add('reset-flash');
                 setTimeout(() => {
-                    checks.forEach(el => el.checked = false);
+                    checks.forEach(el => el.checked = false); 
                     document.getElementById('focus-bonus-badge').classList.add('hidden');
                     document.getElementById('focus-section').classList.remove('reset-flash');
                     saveData();
@@ -453,11 +474,11 @@
                 peaceChecks: [1,2,3,4,5].map(i => document.getElementById(`peace${i}`).checked),
                 focusChecks: [1,2,3,4,5].map(i => document.getElementById(`focus${i}`).checked)
             };
-            localStorage.setItem('blueLab5_dashboard_v28_large', JSON.stringify(data));
+            localStorage.setItem('blueLab5_dashboard_v29_undo', JSON.stringify(data));
         }
 
         function loadData() {
-            const saved = localStorage.getItem('blueLab5_dashboard_v28_large');
+            const saved = localStorage.getItem('blueLab5_dashboard_v29_undo');
             if (saved) {
                 const data = JSON.parse(saved);
                 if (data.goal) document.getElementById('editable-goal').innerText = data.goal;
