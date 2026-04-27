@@ -6,22 +6,28 @@
     <title>2026 BLUE LAB 5 (6-3) Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --vintage-cream: #f4f1ea;
             --vintage-black: #1a1a1a;
             --vintage-gold: #c5a059;
-            --active-bright-gold: #fbbf24; 
+            --active-bright-gold: #fbbf24;
+            --vintage-blue: #8ea7bc; 
+            --active-bright-blue: #a5d8ff; 
             --vintage-paper: #e8e3d5;
         }
+        
         body { 
-            font-family: 'Nanum Myeongjo', serif; 
+            font-family: 'Special Elite', 'Nanum Myeongjo', serif; 
             background-color: var(--vintage-cream);
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-            color: var(--vintage-black);
+            color: var(--vintage-black); 
+            line-height: 1.25;
+            overflow: hidden; 
         }
-        .mono { font-family: 'Courier Prime', monospace; }
+
+        .mono { font-family: 'Special Elite', monospace; }
         
         @keyframes spin {
             from { transform: rotate(0deg); }
@@ -31,7 +37,7 @@
             background: radial-gradient(circle, #333 0%, #111 30%, #333 31%, #111 35%, #000 100%);
             border-radius: 50%;
             animation: spin 12s linear infinite;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             position: relative;
         }
         .lp-label {
@@ -52,31 +58,38 @@
         .vintage-card {
             background-color: var(--vintage-paper);
             border: 1px solid rgba(0,0,0,0.1);
-            box-shadow: 6px 6px 0px rgba(0,0,0,0.03);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.03);
             transition: all 0.3s ease;
         }
 
-        .music-note-check:checked + label {
+        .peace-check:checked + label {
             color: var(--active-bright-gold);
-            transform: translateY(-6px) scale(1.1);
-            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
+            transform: translateY(-3px) scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
+        }
+
+        .focus-check:checked + label {
+            color: #3b82f6; 
+            transform: translateY(-3px) scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
         }
         
         .music-note-check:checked ~ .day-label {
             color: var(--vintage-black);
             font-weight: 900;
+            text-decoration: underline;
         }
 
         .gauge-container {
             background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
         .gauge-fill {
             background: linear-gradient(90deg, var(--vintage-gold) 0%, var(--active-bright-gold) 50%, var(--vintage-gold) 100%);
             background-size: 200% 100%;
             animation: shine 3s infinite linear;
-            box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
             transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         @keyframes shine {
@@ -84,164 +97,229 @@
             100% { background-position: -200% 0; }
         }
 
-        [contenteditable="true"]:focus {
-            outline: 2px dashed var(--vintage-gold);
-            background: white;
-        }
+        [contenteditable="true"] { outline: none; transition: all 0.2s; color: inherit; }
+        [contenteditable="true"]:focus { background: white; color: black; box-shadow: 0 0 0 2px var(--vintage-gold); border-radius: 4px; }
         
-        .score-up {
+        .score-pop-anim {
             animation: score-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             color: #fbbf24 !important;
         }
         @keyframes score-pop {
             0% { transform: scale(1); }
-            50% { transform: scale(1.4); }
+            50% { transform: scale(1.3); }
             100% { transform: scale(1); }
         }
 
-        .reset-flash {
-            animation: flash 0.5s ease-out;
-        }
+        .reset-flash { animation: flash 0.5s ease-out; }
         @keyframes flash {
-            0% { background-color: rgba(251, 191, 36, 0.4); }
+            0% { background-color: rgba(255, 255, 255, 0.6); }
             100% { background-color: rgba(255, 255, 255, 0.4); }
         }
+
+        @keyframes trophy-stack {
+            0% { transform: translateX(50px) scale(0); opacity: 0; }
+            100% { transform: translateX(0) scale(1); opacity: 1; }
+        }
+        .trophy-item { animation: trophy-stack 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        .typewriter-text { text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1); letter-spacing: -0.5px; }
     </style>
 </head>
-<body class="p-2 md:p-4 lg:p-6">
+<body class="p-2 md:p-3 typewriter-text h-screen flex flex-col justify-center items-center relative">
 
-    <div class="max-w-2xl mx-auto space-y-4">
+    <!-- 훈장 전용 컬렉터 영역 -->
+    <div id="trophy-collector" class="fixed right-2 md:right-5 top-6 bottom-6 w-12 md:w-16 flex flex-col gap-2 items-center z-50 overflow-y-auto py-2"></div>
+
+    <div class="max-w-2xl w-full space-y-1.5 mr-14 md:mr-24 lg:mr-28">
         <!-- 헤더 섹션 -->
-        <header class="relative flex items-center gap-4 py-2 border-b border-zinc-200">
-            <div class="relative w-20 h-20 flex-shrink-0">
-                <div class="lp-record w-full h-full border-[6px] border-black">
-                    <div class="lp-label">
-                        <span class="text-[4px] font-bold uppercase tracking-tighter text-black text-center">Lab 5</span>
-                    </div>
+        <header class="relative flex items-center gap-4 py-0.5 border-b border-zinc-200">
+            <div class="relative w-14 h-14 flex-shrink-0">
+                <div class="lp-record w-full h-full border-[3px] border-black">
+                    <div class="lp-label"><span class="text-[2px] font-bold uppercase tracking-tighter text-black text-center leading-none">Lab 5</span></div>
                 </div>
             </div>
-
             <div class="flex-1">
-                <div class="flex items-center gap-2 mb-0.5">
-                    <h1 class="text-2xl font-black text-zinc-900 tracking-tighter leading-none">BLUE LAB 5</h1>
-                    <span class="px-1.5 py-0.5 bg-zinc-900 text-white text-[8px] font-bold uppercase tracking-widest rounded-sm">6-3</span>
+                <div class="flex items-center gap-2 mb-0">
+                    <h1 class="text-xl md:text-2xl font-black text-zinc-900 tracking-tighter leading-none">BLUE LAB 5</h1>
+                    <span class="px-1.5 py-0.5 bg-zinc-900 text-white text-[8px] font-bold uppercase tracking-widest rounded-sm mono">6-3</span>
                 </div>
-                <div class="flex items-center gap-3 text-[10px] mono font-bold text-zinc-400">
-                    <div class="flex items-center gap-1">
-                        <i data-lucide="calendar" size="10"></i>
-                        <span id="live-date">2026.04.24</span>
-                    </div>
-                    <div class="flex items-center gap-1 text-zinc-600">
-                        <i data-lucide="clock" size="10"></i>
-                        <span id="live-time">16:20:45</span>
-                    </div>
+                <div class="flex items-center gap-3 text-[10px] mono font-bold text-zinc-500">
+                    <div class="flex items-center gap-1"><i data-lucide="calendar" size="10"></i><span id="live-date">2026.04.24</span></div>
+                    <div class="flex items-center gap-1 text-zinc-800"><i data-lucide="clock" size="10"></i><span id="live-time">16:20:45</span></div>
                 </div>
             </div>
         </header>
 
         <!-- 1. 평화로운 일주일 -->
-        <section id="peaceful-section" class="vintage-card rounded-2xl p-4 md:p-6 transition-colors duration-500">
-            <div class="flex items-center justify-between mb-4">
+        <section id="peaceful-section" class="vintage-card rounded-lg p-2 md:p-2.5 transition-colors duration-500">
+            <div class="flex items-center justify-between mb-1 px-1">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="shield-check" class="text-zinc-800" size="16"></i>
-                    <h2 class="text-lg font-black uppercase tracking-widest">평화로운 일주일</h2>
+                    <i data-lucide="shield-check" class="text-zinc-900" size="15"></i>
+                    <h2 class="text-sm font-black uppercase tracking-widest leading-none text-zinc-900">평화로운 일주일</h2>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span id="bonus-badge" class="hidden px-2 py-0.5 bg-amber-100 text-amber-600 text-[8px] font-bold rounded-full border border-amber-200 animate-pulse">WEEKLY BONUS +10 COMPLETED</span>
-                    <span class="text-[8px] font-bold text-zinc-400 uppercase tracking-widest mono">Weekly Track</span>
-                </div>
+                <span id="peace-bonus-badge" class="hidden px-2 bg-amber-100 text-amber-600 text-[8px] font-bold rounded-full animate-pulse mono">+10 BONUS</span>
             </div>
-            
-            <div class="grid grid-cols-5 gap-2 md:gap-4 py-4 px-4 bg-white/40 rounded-xl border border-white/70 shadow-inner">
-                <div class="flex flex-col items-center gap-2">
-                    <input type="checkbox" id="note1" class="hidden music-note-check" onchange="handleCheckChange()">
-                    <label for="note1" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400">
-                        <i data-lucide="music-2" size="40"></i>
-                    </label>
-                    <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">MON</span>
+            <div class="grid grid-cols-5 gap-2 py-1.5 px-4 bg-white/40 rounded-lg border border-white/70 shadow-inner">
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="peace1" class="hidden music-note-check peace-check" onchange="handlePeaceChange(0)">
+                    <label for="peace1" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">MON</span>
                 </div>
-                <div class="flex flex-col items-center gap-2">
-                    <input type="checkbox" id="note2" class="hidden music-note-check" onchange="handleCheckChange()">
-                    <label for="note2" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400">
-                        <i data-lucide="music-2" size="40"></i>
-                    </label>
-                    <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">TUE</span>
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="peace2" class="hidden music-note-check peace-check" onchange="handlePeaceChange(1)">
+                    <label for="peace2" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">TUE</span>
                 </div>
-                <div class="flex flex-col items-center gap-2">
-                    <input type="checkbox" id="note3" class="hidden music-note-check" onchange="handleCheckChange()">
-                    <label for="note3" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400">
-                        <i data-lucide="music-2" size="40"></i>
-                    </label>
-                    <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">WED</span>
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="peace3" class="hidden music-note-check peace-check" onchange="handlePeaceChange(2)">
+                    <label for="peace3" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">WED</span>
                 </div>
-                <div class="flex flex-col items-center gap-2">
-                    <input type="checkbox" id="note4" class="hidden music-note-check" onchange="handleCheckChange()">
-                    <label for="note4" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400">
-                        <i data-lucide="music-2" size="40"></i>
-                    </label>
-                    <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">THU</span>
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="peace4" class="hidden music-note-check peace-check" onchange="handlePeaceChange(3)">
+                    <label for="peace4" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">THU</span>
                 </div>
-                <div class="flex flex-col items-center gap-2">
-                    <input type="checkbox" id="note5" class="hidden music-note-check" onchange="handleCheckChange()">
-                    <label for="note5" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400">
-                        <i data-lucide="music-2" size="40"></i>
-                    </label>
-                    <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">FRI</span>
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="peace5" class="hidden music-note-check peace-check" onchange="handlePeaceChange(4)">
+                    <label for="peace5" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">FRI</span>
                 </div>
             </div>
         </section>
 
-        <!-- 2. 학급 공동 목표 (목표 설정 및 글자 크기 대폭 확대) -->
-        <section class="bg-zinc-900 rounded-2xl p-6 md:p-8 text-white shadow-lg border-t-2 border-zinc-800 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-zinc-800/30 rounded-bl-full -mr-8 -mt-8"></div>
-            
-            <div class="relative z-10 space-y-6">
-                <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+        <!-- 2. 지적 없는 일주일 -->
+        <section id="focus-section" class="vintage-card rounded-lg p-2 md:p-2.5 transition-colors duration-500 border-l-4 border-l-[#8ea7bc]">
+            <div class="flex items-center justify-between mb-1 px-1">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="user-check" class="text-zinc-900" size="15"></i>
+                    <h2 class="text-sm font-black uppercase tracking-widest leading-none text-zinc-900">지적 없는 일주일</h2>
+                </div>
+                <span id="focus-bonus-badge" class="hidden px-2 bg-blue-100 text-blue-700 text-[8px] font-bold rounded-full animate-pulse mono">+5 BONUS</span>
+            </div>
+            <div class="grid grid-cols-5 gap-2 py-1.5 px-4 bg-white/40 rounded-lg border border-white/70 shadow-inner">
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="focus1" class="hidden music-note-check focus-check" onchange="handleFocusChange(0)">
+                    <label for="focus1" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">MON</span>
+                </div>
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="focus2" class="hidden music-note-check focus-check" onchange="handleFocusChange(1)">
+                    <label for="focus2" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">TUE</span>
+                </div>
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="focus3" class="hidden music-note-check focus-check" onchange="handleFocusChange(2)">
+                    <label for="focus3" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">WED</span>
+                </div>
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="focus4" class="hidden music-note-check focus-check" onchange="handleFocusChange(3)">
+                    <label for="focus4" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">THU</span>
+                </div>
+                <div class="flex flex-col items-center gap-0.5">
+                    <input type="checkbox" id="focus5" class="hidden music-note-check focus-check" onchange="handleFocusChange(4)">
+                    <label for="focus5" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="28"></i></label>
+                    <span class="day-label mono text-[8px] font-bold text-zinc-400 uppercase">FRI</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 학급 공동 목표 -->
+        <section class="bg-zinc-900 rounded-lg p-2.5 md:p-3 text-white shadow-lg border-t-2 border-zinc-800 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-zinc-800/30 rounded-bl-full -mr-6 -mt-6"></div>
+            <div class="relative z-10 space-y-2.5">
+                <div class="flex flex-col md:flex-row gap-3 items-center">
                     <div class="flex-1 w-full">
-                        <!-- 목표 설정 영역 크기 3배 확대 (text-3xl) -->
-                        <div class="flex items-baseline gap-3 mb-4">
-                            <i data-lucide="target" class="text-blue-500 shrink-0" size="24"></i>
-                            <div class="flex items-baseline gap-2 text-2xl md:text-3xl font-black uppercase tracking-tight text-zinc-400">
-                                <span>목표:</span>
-                                <span id="target-score-input" contenteditable="true" onblur="handleTargetChange()" class="text-amber-500 border-b-2 border-zinc-700 px-2 min-w-[60px] text-center focus:outline-none focus:border-amber-500">100</span>
+                        <div class="flex items-baseline gap-2 mb-0.5">
+                            <i data-lucide="target" class="text-blue-500 shrink-0" size="14"></i>
+                            <div class="flex items-baseline gap-1 text-sm md:text-base font-black uppercase tracking-tighter text-zinc-500 leading-none">
+                                <span class="mono text-zinc-400">목표:</span>
+                                <span id="target-score-input" contenteditable="true" onblur="handleTargetChange()" onkeydown="handleInputEnter(event, 'target')" class="text-amber-500 border-b border-zinc-700 px-1 min-w-[35px] text-center mono">100</span>
                             </div>
                         </div>
-                        <div id="editable-goal" 
-                             contenteditable="true" 
-                             onblur="saveData()"
-                             class="text-xl md:text-2xl font-bold leading-tight border-b border-zinc-800 pb-2 focus:outline-none placeholder-zinc-700">
-                            BLUE LAB 5 공동목표
+                        <div id="editable-goal" contenteditable="true" onblur="saveData()" onkeydown="handleInputEnter(event, 'goal')" class="text-sm md:text-base font-bold leading-tight border-b border-zinc-800 pb-0.5 focus:outline-none placeholder-zinc-700">BLUE LAB 5 공동목표</div>
+                        
+                        <div class="flex items-center gap-2 mt-1 px-1 opacity-90">
+                            <i data-lucide="gift" class="text-pink-400 shrink-0 mt-0.5" size="14"></i>
+                            <div class="flex items-baseline gap-2 text-xs md:text-sm font-bold tracking-tight text-zinc-500 leading-none">
+                                <span class="mono text-zinc-400 uppercase shrink-0">REWARD:</span>
+                                <span id="editable-reward" contenteditable="true" onblur="saveData()" onkeydown="handleInputEnter(event, 'reward')" class="text-zinc-200 border-b border-zinc-800 px-1 min-w-[120px] focus:text-pink-300">보상을 입력하세요</span>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="flex items-center gap-4 bg-zinc-800/50 px-5 py-3 rounded-2xl border border-zinc-700">
-                        <button onclick="updateScore(-5)" class="w-8 h-8 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold transition-colors">-</button>
-                        <span id="score-display" class="text-4xl md:text-5xl font-black mono text-blue-500 transition-all duration-300">0</span>
-                        <button onclick="updateScore(5)" class="w-8 h-8 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold transition-colors">+</button>
+                    <div class="flex gap-1.5">
+                        <div class="flex flex-col items-center gap-0.5 bg-zinc-800/50 p-1 rounded-md border border-blue-900/30">
+                            <div class="flex items-center gap-1 mb-0.5">
+                                <button onclick="changePlusValue(-1)" class="w-4 h-4 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-[10px] text-blue-400">-</button>
+                                <span id="plus-display" contenteditable="true" oninput="syncManualInput('plus')" onkeydown="handleInputEnter(event, 'plus')" class="text-sm font-black mono text-blue-500 min-w-[18px] text-center">0</span>
+                                <button onclick="changePlusValue(1)" class="w-4 h-4 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-[10px] text-blue-400">+</button>
+                            </div>
+                            <button onclick="grantPlusPoints()" class="w-full py-0 bg-blue-600 hover:bg-blue-500 text-white rounded text-[7px] font-bold uppercase tracking-tighter">부여</button>
+                        </div>
+                        <div class="flex flex-col items-center gap-0.5 bg-zinc-800/50 p-1 rounded-md border border-red-900/30">
+                            <div class="flex items-center gap-1 mb-0.5">
+                                <button onclick="changeMinusValue(-1)" class="w-4 h-4 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-[10px] text-red-400">-</button>
+                                <span id="minus-display" contenteditable="true" oninput="syncManualInput('minus')" onkeydown="handleInputEnter(event, 'minus')" class="text-sm font-black mono text-red-500 min-w-[18px] text-center">0</span>
+                                <button onclick="changeMinusValue(1)" class="w-4 h-4 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-[10px] text-red-400">+</button>
+                            </div>
+                            <button onclick="grantMinusPoints()" class="w-full py-0 bg-red-600 hover:bg-red-500 text-white rounded text-[7px] font-bold uppercase tracking-tighter">차감</button>
+                        </div>
                     </div>
                 </div>
-
-                <!-- 게이지 상태 레이블 크기 3배 확대 (text-3xl) -->
-                <div class="space-y-3">
+                <div class="space-y-1.5 pt-1">
                     <div class="flex justify-between items-baseline px-1">
-                        <span class="text-[10px] font-bold text-zinc-500 mono uppercase tracking-widest">Progress to Gold Record</span>
-                        <span id="gauge-status-label" class="text-2xl md:text-3xl font-black text-amber-400 mono tracking-tighter">0 / 100</span>
+                        <span class="text-[7px] font-bold text-zinc-600 mono uppercase tracking-wider">Milestone Progress</span>
+                        <span id="gauge-status-label" class="text-base md:text-lg font-black text-amber-400 mono tracking-tighter transition-all duration-500">0 / 100</span>
                     </div>
-                    <div class="gauge-container w-full h-3 rounded-full overflow-hidden">
+                    <div class="gauge-container w-full h-5 rounded-full overflow-hidden">
                         <div id="goal-gauge" class="gauge-fill h-full rounded-full" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer class="flex justify-between items-center text-zinc-400 mono text-[8px] font-bold uppercase tracking-widest px-2">
-            <span>BLUE LAB 5</span>
-            <span>2026 EDITION</span>
+        <footer class="flex justify-between items-center text-zinc-500 mono text-[8px] font-bold uppercase tracking-widest px-2 pt-0.5 border-t border-zinc-200">
+            <div class="flex items-center gap-2"><i data-lucide="disc" size="8"></i><span>BLUE LAB 5 RECORDS</span></div>
+            <span>TYPEWRITER EDITION 2026</span>
         </footer>
     </div>
 
     <script>
         lucide.createIcons();
+
+        // 오디오 컨텍스트 및 마림바 소리 합성 함수
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const frequencies = [261.63, 293.66, 329.63, 349.23, 392.00]; // 도, 레, 미, 파, 솔
+
+        function playMarimba(index) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const freq = frequencies[index] || 261.63;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            // 마림바 느낌의 부드러운 삼각형 파형
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            // 타악기 특유의 빠른 어택과 감쇠(Decay)
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        let currentTotalScore = 0;
+        let tempPlusScore = 0;
+        let tempMinusScore = 0;
+        let earnedTrophies = 0;
 
         function updateClock() {
             const now = new Date();
@@ -253,104 +331,165 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        function handleTargetChange() {
-            const score = parseInt(document.getElementById('score-display').innerText);
-            updateGauge(score);
-            saveData();
-        }
-
-        function updateScore(amount, isBonus = false) {
-            const display = document.getElementById('score-display');
-            let current = parseInt(display.innerText);
-            current = Math.max(0, current + amount);
-            display.innerText = current;
-            
-            if (isBonus) {
-                display.classList.add('score-up');
-                setTimeout(() => display.classList.remove('score-up'), 600);
+        function handleInputEnter(e, type) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.target.blur();
+                if (type === 'plus') grantPlusPoints();
+                else if (type === 'minus') grantMinusPoints();
+                else if (type === 'target' || type === 'reward') handleTargetChange();
+                else if (type === 'goal') saveData();
             }
-            
-            updateGauge(current);
+        }
+
+        function syncManualInput(type) {
+            const el = document.getElementById(type + '-display');
+            let val = parseInt(el.innerText);
+            if (isNaN(val)) val = 0;
+            if (type === 'plus') tempPlusScore = Math.max(0, val);
+            else tempMinusScore = Math.max(0, val);
             saveData();
         }
 
-        function updateGauge(score) {
+        function changePlusValue(amount) {
+            tempPlusScore = Math.max(0, tempPlusScore + amount);
+            document.getElementById('plus-display').innerText = tempPlusScore;
+            saveData();
+        }
+
+        function changeMinusValue(amount) {
+            tempMinusScore = Math.max(0, tempMinusScore + amount);
+            document.getElementById('minus-display').innerText = tempMinusScore;
+            saveData();
+        }
+
+        function grantPlusPoints() {
+            if (tempPlusScore === 0) return;
+            applyScoreChange(tempPlusScore);
+            tempPlusScore = 0;
+            document.getElementById('plus-display').innerText = 0;
+            saveData();
+        }
+
+        function grantMinusPoints() {
+            if (tempMinusScore === 0) return;
+            applyScoreChange(-tempMinusScore);
+            tempMinusScore = 0;
+            document.getElementById('minus-display').innerText = 0;
+            saveData();
+        }
+
+        function applyScoreChange(amount) {
+            const targetInput = document.getElementById('target-score-input');
+            let targetValue = parseInt(targetInput.innerText);
+            if (isNaN(targetValue) || targetValue <= 0) targetValue = 100;
+            currentTotalScore += amount;
+            if (currentTotalScore >= targetValue) {
+                earnedTrophies++;
+                currentTotalScore = Math.max(0, currentTotalScore - targetValue);
+                renderTrophies();
+                triggerCelebration();
+            }
+            updateGauge();
+        }
+
+        function triggerCelebration() {
+            const statusLabel = document.getElementById('gauge-status-label');
+            statusLabel.classList.add('score-pop-anim');
+            setTimeout(() => statusLabel.classList.remove('score-pop-anim'), 1000);
+        }
+
+        function handleTargetChange() { updateGauge(); saveData(); }
+
+        function updateGauge() {
             const targetInput = document.getElementById('target-score-input');
             const statusLabel = document.getElementById('gauge-status-label');
             const gauge = document.getElementById('goal-gauge');
-            
             let targetValue = parseInt(targetInput.innerText);
             if (isNaN(targetValue) || targetValue <= 0) targetValue = 100;
-
-            const percentage = Math.min(100, (score / targetValue) * 100);
+            const percentage = Math.max(0, Math.min(100, (currentTotalScore / targetValue) * 100));
             gauge.style.width = percentage + '%';
-            
-            statusLabel.textContent = `${score} / ${targetValue}`;
+            statusLabel.textContent = `${currentTotalScore} / ${targetValue}`;
         }
 
-        function handleCheckChange() {
-            const checks = [
-                document.getElementById('note1'),
-                document.getElementById('note2'),
-                document.getElementById('note3'),
-                document.getElementById('note4'),
-                document.getElementById('note5')
-            ];
-            
-            const isNowFullyChecked = checks.every(el => el.checked === true);
+        function renderTrophies() {
+            const collector = document.getElementById('trophy-collector');
+            collector.innerHTML = '';
+            for(let i=0; i < earnedTrophies; i++) {
+                const img = document.createElement('img');
+                img.src = '블루랩 이미지.JPG';
+                img.className = 'w-10 h-10 object-contain trophy-item filter drop-shadow-md mb-1';
+                img.onerror = function() { this.src = 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png'; };
+                collector.appendChild(img);
+            }
+        }
 
-            if (isNowFullyChecked) {
-                updateScore(10, true);
-                
-                const bonusBadge = document.getElementById('bonus-badge');
-                const peacefulSection = document.getElementById('peaceful-section');
-                
-                bonusBadge.classList.remove('hidden');
-                peacefulSection.classList.add('reset-flash');
-                
+        function handlePeaceChange(index) {
+            const checks = [1,2,3,4,5].map(i => document.getElementById(`peace${i}`));
+            
+            // 음표를 켤 때(checked)만 소리 재생
+            if (document.getElementById(`peace${index+1}`).checked) {
+                playMarimba(index);
+            }
+
+            if (checks.every(el => el.checked)) {
+                applyScoreChange(10);
+                document.getElementById('peace-bonus-badge').classList.remove('hidden');
+                document.getElementById('peaceful-section').classList.add('reset-flash');
                 setTimeout(() => {
                     checks.forEach(el => el.checked = false);
-                    bonusBadge.classList.add('hidden');
-                    peacefulSection.classList.remove('reset-flash');
+                    document.getElementById('peace-bonus-badge').classList.add('hidden');
+                    document.getElementById('peaceful-section').classList.remove('reset-flash');
                     saveData();
-                }, 1500); 
-            } else {
-                saveData();
+                }, 1500);
+            } else { saveData(); }
+        }
+
+        function handleFocusChange(index) {
+            const checks = [1,2,3,4,5].map(i => document.getElementById(`focus${i}`));
+            
+            // 음표를 켤 때(checked)만 소리 재생
+            if (document.getElementById(`focus${index+1}`).checked) {
+                playMarimba(index);
             }
+
+            if (checks.every(el => el.checked)) {
+                applyScoreChange(5); 
+                document.getElementById('focus-bonus-badge').classList.remove('hidden');
+                document.getElementById('focus-section').classList.add('reset-flash');
+                setTimeout(() => {
+                    checks.forEach(el => el.checked = false); 
+                    document.getElementById('focus-bonus-badge').classList.add('hidden');
+                    document.getElementById('focus-section').classList.remove('reset-flash');
+                    saveData();
+                }, 1500);
+            } else { saveData(); }
         }
 
         function saveData() {
             const data = {
                 goal: document.getElementById('editable-goal').innerText,
-                score: document.getElementById('score-display').innerText,
+                reward: document.getElementById('editable-reward').innerText,
+                currentTotalScore, earnedTrophies,
                 targetScore: document.getElementById('target-score-input').innerText,
-                checks: [
-                    document.getElementById('note1').checked,
-                    document.getElementById('note2').checked,
-                    document.getElementById('note3').checked,
-                    document.getElementById('note4').checked,
-                    document.getElementById('note5').checked
-                ]
+                peaceChecks: [1,2,3,4,5].map(i => document.getElementById(`peace${i}`).checked),
+                focusChecks: [1,2,3,4,5].map(i => document.getElementById(`focus${i}`).checked)
             };
-            localStorage.setItem('blueLab5_dashboard_v8_data', JSON.stringify(data));
+            localStorage.setItem('blueLab5_dashboard_v27_sound', JSON.stringify(data));
         }
 
         function loadData() {
-            const saved = localStorage.getItem('blueLab5_dashboard_v8_data');
+            const saved = localStorage.getItem('blueLab5_dashboard_v27_sound');
             if (saved) {
                 const data = JSON.parse(saved);
-                if (data.goal && data.goal !== "") document.getElementById('editable-goal').innerText = data.goal;
+                if (data.goal) document.getElementById('editable-goal').innerText = data.goal;
+                if (data.reward) document.getElementById('editable-reward').innerText = data.reward;
                 if (data.targetScore) document.getElementById('target-score-input').innerText = data.targetScore;
-                if (data.score) {
-                    document.getElementById('score-display').innerText = data.score;
-                    updateGauge(parseInt(data.score));
-                }
-                if (data.checks) {
-                    data.checks.forEach((checked, i) => {
-                        const el = document.getElementById(`note${i+1}`);
-                        if (el) el.checked = checked;
-                    });
-                }
+                currentTotalScore = data.currentTotalScore || 0;
+                earnedTrophies = data.earnedTrophies || 0;
+                if (data.peaceChecks) data.peaceChecks.forEach((c, i) => document.getElementById(`peace${i+1}`).checked = c);
+                if (data.focusChecks) data.focusChecks.forEach((c, i) => document.getElementById(`focus${i+1}`).checked = c);
+                renderTrophies(); updateGauge();
             }
         }
         window.onload = loadData;
