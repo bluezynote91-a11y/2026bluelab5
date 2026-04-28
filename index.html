@@ -25,6 +25,22 @@
             color: var(--vintage-black); 
             line-height: 1.3;
             overflow: hidden; 
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #main-scaler {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1300px; /* 여유 공간 확보 */
+            padding: 1rem;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
         }
 
         .mono { font-family: 'Special Elite', monospace; }
@@ -89,7 +105,7 @@
             background: linear-gradient(90deg, var(--vintage-gold) 0%, var(--active-bright-gold) 50%, var(--vintage-gold) 100%);
             background-size: 200% 100%;
             animation: shine 3s infinite linear;
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
             transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         @keyframes shine {
@@ -106,7 +122,7 @@
         }
         @keyframes score-pop {
             0% { transform: scale(1); }
-            50% { transform: scale(1.4); }
+            50% { transform: scale(1.3); }
             100% { transform: scale(1); }
         }
 
@@ -117,184 +133,292 @@
         }
 
         @keyframes trophy-stack {
-            0% { transform: translateX(60px) scale(0); opacity: 0; }
+            0% { transform: translateX(50px) scale(0); opacity: 0; }
             100% { transform: translateX(0) scale(1); opacity: 1; }
         }
         .trophy-item { animation: trophy-stack 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
-        .typewriter-text { text-shadow: 0.5px 0.5px 1.5px rgba(0,0,0,0.12); letter-spacing: -0.5px; }
+        .history-transition {
+            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+        }
+
+        .typewriter-text { text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1); letter-spacing: -0.5px; }
     </style>
 </head>
-<body class="p-4 md:p-6 typewriter-text h-screen flex flex-col justify-center items-center relative">
+<body class="typewriter-text">
 
-    <!-- 훈장 전용 컬렉터 영역 -->
-    <div id="trophy-collector" class="fixed right-3 md:right-8 top-10 bottom-10 w-16 md:w-24 flex flex-col gap-3 items-center z-50 overflow-y-auto py-4"></div>
-
-    <div class="max-w-4xl w-full space-y-3 mr-16 md:mr-32 lg:mr-40">
-        
-        <!-- 헤더 섹션 -->
-        <header class="relative flex items-center gap-6 py-2 border-b-2 border-zinc-200">
-            <div class="relative w-24 h-24 flex-shrink-0">
-                <div class="lp-record w-full h-full border-[5px] border-black">
-                    <div class="lp-label"><span class="text-[4px] font-bold uppercase tracking-tighter text-black text-center leading-none">Lab 5</span></div>
-                </div>
-            </div>
-            <div class="flex-1">
-                <div class="flex items-center gap-4 mb-1">
-                    <h1 class="text-4xl md:text-5xl font-black text-zinc-900 tracking-tighter leading-none">BLUE LAB 5</h1>
-                    <span class="px-3 py-1 bg-zinc-900 text-white text-xs font-bold uppercase tracking-widest rounded mono">6-3</span>
-                </div>
-                <div class="flex items-center gap-5 text-sm mono font-bold text-zinc-500">
-                    <div class="flex items-center gap-1.5"><i data-lucide="calendar" size="14"></i><span id="live-date">2026.04.24</span></div>
-                    <div class="flex items-center gap-1.5 text-zinc-800"><i data-lucide="clock" size="14"></i><span id="live-time">16:20:45</span></div>
-                </div>
-            </div>
-        </header>
-
-        <!-- 1. 평화로운 일주일 -->
-        <section id="peaceful-section" class="vintage-card rounded-2xl p-4 md:p-5 transition-colors duration-500">
-            <div class="flex items-center justify-between mb-2.5 px-2">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="shield-check" class="text-zinc-900" size="20"></i>
-                    <h2 class="text-xl font-black uppercase tracking-widest leading-none text-zinc-900">평화로운 일주일</h2>
-                </div>
-                <span id="peace-bonus-badge" class="hidden px-3 py-1 bg-amber-100 text-amber-600 text-xs font-bold rounded-full animate-pulse mono font-black border border-amber-200">+10 BONUS</span>
-            </div>
-            <div class="grid grid-cols-5 gap-4 py-4 px-6 bg-white/40 rounded-xl border border-white/70 shadow-inner">
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="peace1" class="hidden music-note-check peace-check" onchange="handlePeaceChange(0)">
-                    <label for="peace1" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">MON</span>
-                </div>
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="peace2" class="hidden music-note-check peace-check" onchange="handlePeaceChange(1)">
-                    <label for="peace2" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">TUE</span>
-                </div>
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="peace3" class="hidden music-note-check peace-check" onchange="handlePeaceChange(2)">
-                    <label for="peace3" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">WED</span>
-                </div>
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="peace4" class="hidden music-note-check peace-check" onchange="handlePeaceChange(3)">
-                    <label for="peace4" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">THU</span>
-                </div>
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="peace5" class="hidden music-note-check peace-check" onchange="handlePeaceChange(4)">
-                    <label for="peace5" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">FRI</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. 지적 없는 일주일 -->
-        <section id="focus-section" class="vintage-card rounded-2xl p-4 md:p-5 transition-colors duration-500 border-l-8 border-l-[#8ea7bc]">
-            <div class="flex items-center justify-between mb-2.5 px-2">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="user-check" class="text-zinc-900" size="20"></i>
-                    <h2 class="text-xl font-black uppercase tracking-widest leading-none text-zinc-900">지적 없는 일주일</h2>
-                </div>
-                <span id="focus-bonus-badge" class="hidden px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full animate-pulse mono font-black border border-blue-200">+5 BONUS</span>
-            </div>
-            <div class="grid grid-cols-5 gap-4 py-4 px-6 bg-white/40 rounded-xl border border-white/70 shadow-inner">
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="focus1" class="hidden music-note-check focus-check" onchange="handleFocusChange(0)">
-                    <label for="focus1" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">MON</span>
-                </div>
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="focus2" class="hidden music-note-check focus-check" onchange="handleFocusChange(1)">
-                    <label for="focus2" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">TUE</span>
-                </div>
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="focus3" class="hidden music-note-check focus-check" onchange="handleFocusChange(2)">
-                    <label for="focus3" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">WED</span>
-                </div>
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="focus4" class="hidden music-note-check focus-check" onchange="handleFocusChange(3)">
-                    <label for="focus4" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">THU</span>
-                </div>
-                <div class="flex flex-col items-center gap-1.5">
-                    <input type="checkbox" id="focus5" class="hidden music-note-check focus-check" onchange="handleFocusChange(4)">
-                    <label for="focus5" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="44"></i></label>
-                    <span class="day-label mono text-xs font-bold text-zinc-400 uppercase">FRI</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. 학급 공동 목표 -->
-        <section class="bg-zinc-900 rounded-2xl p-4 md:p-6 text-white shadow-xl border-t-4 border-zinc-800 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-zinc-800/30 rounded-bl-full -mr-8 -mt-8"></div>
-            <div class="relative z-10 space-y-4">
-                <div class="flex flex-col md:flex-row gap-5 items-center">
-                    <div class="flex-1 w-full">
-                        <div class="flex items-baseline gap-3 mb-1">
-                            <i data-lucide="target" class="text-blue-500 shrink-0" size="18"></i>
-                            <div class="flex items-baseline gap-2 text-xl md:text-2xl font-black uppercase tracking-tighter text-zinc-500 leading-none">
-                                <span class="mono text-zinc-400">목표:</span>
-                                <span id="target-score-input" contenteditable="true" onblur="handleTargetChange()" onkeydown="handleInputEnter(event, 'target')" class="text-amber-500 border-b-2 border-zinc-700 px-2 min-w-[50px] text-center mono">100</span>
-                            </div>
-                        </div>
-                        <div id="editable-goal" contenteditable="true" onblur="saveData()" onkeydown="handleInputEnter(event, 'goal')" class="text-lg md:text-2xl font-bold leading-tight border-b border-zinc-800 pb-1 focus:outline-none placeholder-zinc-700">BLUE LAB 5 공동목표</div>
-                        
-                        <div class="flex items-center gap-3 mt-2 px-1 opacity-90">
-                            <i data-lucide="gift" class="text-pink-400 shrink-0 mt-0.5" size="16"></i>
-                            <div class="flex items-baseline gap-2 text-sm md:text-base font-bold tracking-tight text-zinc-500 leading-none">
-                                <span class="mono text-zinc-400 uppercase shrink-0">REWARD:</span>
-                                <span id="editable-reward" contenteditable="true" onblur="saveData()" onkeydown="handleInputEnter(event, 'reward')" class="text-zinc-200 border-b-2 border-zinc-800 px-2 min-w-[150px] focus:text-pink-300">보상을 입력하세요</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex gap-3">
-                        <div class="flex flex-col items-center gap-1.5 bg-zinc-800/50 p-2 rounded-xl border border-blue-900/30">
-                            <div class="flex items-center gap-2 mb-1">
-                                <button onclick="changePlusValue(-1)" class="w-7 h-7 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-xs text-blue-400 shadow-md">-</button>
-                                <span id="plus-display" contenteditable="true" oninput="syncManualInput('plus')" onkeydown="handleInputEnter(event, 'plus')" class="text-2xl font-black mono text-blue-500 min-w-[28px] text-center px-1">0</span>
-                                <button onclick="changePlusValue(1)" class="w-7 h-7 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-xs text-blue-400 shadow-md">+</button>
-                            </div>
-                            <button onclick="grantPlusPoints()" class="w-full py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-md font-bold text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95">부여</button>
-                        </div>
-                        <div class="flex flex-col items-center gap-1.5 bg-zinc-800/50 p-2 rounded-xl border border-red-900/30">
-                            <div class="flex items-center gap-2 mb-1">
-                                <button onclick="changeMinusValue(-1)" class="w-7 h-7 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-xs text-red-400 shadow-md">-</button>
-                                <span id="minus-display" contenteditable="true" oninput="syncManualInput('minus')" onkeydown="handleInputEnter(event, 'minus')" class="text-2xl font-black mono text-red-500 min-w-[28px] text-center px-1">0</span>
-                                <button onclick="changeMinusValue(1)" class="w-7 h-7 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-xs text-red-400 shadow-md">+</button>
-                            </div>
-                            <button onclick="grantMinusPoints()" class="w-full py-1 bg-red-600 hover:bg-red-500 text-white rounded-md font-bold text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95">차감</button>
-                        </div>
+    <div id="main-scaler">
+        <div class="w-full max-w-5xl space-y-2.5 px-4">
+            
+            <!-- 헤더 섹션 -->
+            <header class="relative flex items-center gap-6 py-1.5 border-b-2 border-zinc-200">
+                <div class="relative w-20 h-20 flex-shrink-0">
+                    <div class="lp-record w-full h-full border-[4px] border-black">
+                        <div class="lp-label"><span class="text-[3px] font-bold uppercase tracking-tighter text-black text-center leading-none">Lab 5</span></div>
                     </div>
                 </div>
-                <div class="space-y-2.5 pt-2">
-                    <div class="flex justify-between items-baseline px-1">
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-end gap-4 mb-0.5 relative">
                         <div class="flex items-center gap-3">
-                            <span class="text-[9px] font-bold text-zinc-600 mono uppercase tracking-[0.2em]">Milestone Progress</span>
-                            <!-- 성취 취소 버튼 추가 -->
-                            <button onclick="undoAchievement()" class="text-[8px] font-bold text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest underline decoration-zinc-700 underline-offset-2 mono">
-                                [UNDO]
-                            </button>
+                            <h1 class="text-3xl md:text-4xl font-black text-zinc-900 tracking-tighter leading-none">BLUE LAB 5</h1>
+                            <span class="px-2 py-0.5 bg-zinc-900 text-white text-[10px] font-bold uppercase tracking-widest rounded mono">6-3</span>
                         </div>
-                        <span id="gauge-status-label" class="text-2xl md:text-3xl font-black text-amber-400 mono tracking-tighter transition-all duration-500">0 / 100</span>
+
+                        <!-- 오늘의 단어 섹션 (가로 길이 1.3배 확대 및 위치 하향 조정) -->
+                        <div class="ml-6 flex items-center gap-3 bg-white/50 px-8 py-3.5 rounded-xl border-2 border-zinc-300 shadow-md relative group translate-y-4">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-black text-zinc-500 mono leading-none mb-1.5 uppercase tracking-wider">Today's Word</span>
+                                <div class="flex items-center gap-4">
+                                    <!-- min-w를 [120px]에서 [200px]로 늘려 가로 길이를 약 1.3배 이상 확보 -->
+                                    <span id="current-word-input" contenteditable="true" onkeydown="handleWordEnter(event)" class="text-xl md:text-3xl font-black text-zinc-900 min-w-[200px] border-b-2 border-zinc-500 focus:border-blue-600 leading-tight">단어 입력</span>
+                                    <button onclick="toggleWordHistory()" class="text-zinc-500 hover:text-zinc-900 transition-colors">
+                                        <i id="history-icon" data-lucide="chevron-down" size="26"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 단어 히스토리 (상위 박스 너비에 맞춰 조정) -->
+                            <div id="word-history" class="absolute top-full left-0 mt-3 w-full min-w-[280px] bg-white/98 border-2 border-zinc-200 rounded-xl shadow-2xl z-[60] overflow-hidden history-transition opacity-0 pointer-events-none max-h-0">
+                                <div class="p-3 border-b border-zinc-100 flex justify-between items-center bg-zinc-50">
+                                    <span class="text-xs font-bold text-zinc-500 uppercase mono tracking-widest">Word Archive</span>
+                                    <button onclick="clearWordHistory()" class="text-[10px] text-zinc-400 hover:text-red-500 uppercase font-bold px-2 py-1 bg-white border border-zinc-200 rounded-md">Clear All</button>
+                                </div>
+                                <div id="history-list" class="max-h-64 overflow-y-auto p-3 flex flex-col gap-2">
+                                    <!-- 누적 단어들 -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="gauge-container w-full h-8 rounded-full overflow-hidden border-2 border-zinc-800">
-                        <div id="goal-gauge" class="gauge-fill h-full rounded-full" style="width: 0%"></div>
+
+                    <div class="flex items-center gap-4 text-xs mono font-bold text-zinc-500 mt-2">
+                        <div class="flex items-center gap-1.5"><i data-lucide="calendar" size="12"></i><span id="live-date">2026.04.24</span></div>
+                        <div class="flex items-center gap-1.5 text-zinc-800"><i data-lucide="clock" size="12"></i><span id="live-time">16:20:45</span></div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </header>
 
-        <footer class="flex justify-between items-center text-zinc-500 mono text-[10px] font-bold uppercase tracking-[0.3em] px-2 pt-2 border-t border-zinc-200">
-            <div class="flex items-center gap-3"><i data-lucide="disc" size="12"></i><span>BLUE LAB 5 RECORDS</span></div>
-            <span>TYPEWRITER EDITION 2026</span>
-        </footer>
+            <!-- 1. 평화로운 일주일 -->
+            <section id="peaceful-section" class="vintage-card rounded-xl p-3 md:p-4 transition-colors duration-500">
+                <div class="flex items-center justify-between mb-1.5 px-1">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="shield-check" class="text-zinc-900" size="18"></i>
+                        <h2 class="text-lg font-black uppercase tracking-widest leading-none text-zinc-900">평화로운 일주일</h2>
+                    </div>
+                    <span id="peace-bonus-badge" class="hidden px-2 py-0.5 bg-amber-100 text-amber-600 text-[9px] font-bold rounded-full animate-pulse mono border border-amber-200">+10 BONUS</span>
+                </div>
+                <div class="grid grid-cols-5 gap-4 py-3 px-6 bg-white/40 rounded-xl border border-white/70 shadow-inner">
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="peace1" class="hidden music-note-check peace-check" onchange="handlePeaceChange(0)">
+                        <label for="peace1" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">MON</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="peace2" class="hidden music-note-check peace-check" onchange="handlePeaceChange(1)">
+                        <label for="peace2" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">TUE</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="peace3" class="hidden music-note-check peace-check" onchange="handlePeaceChange(2)">
+                        <label for="peace3" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">WED</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="peace4" class="hidden music-note-check peace-check" onchange="handlePeaceChange(3)">
+                        <label for="peace4" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">THU</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="peace5" class="hidden music-note-check peace-check" onchange="handlePeaceChange(4)">
+                        <label for="peace5" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-zinc-400"><i data-lucide="music-2" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">FRI</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 지적 없는 일주일 -->
+            <section id="focus-section" class="vintage-card rounded-xl p-3 md:p-4 transition-colors duration-500 border-l-8 border-l-[#8ea7bc]">
+                <div class="flex items-center justify-between mb-1.5 px-1">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="user-check" class="text-zinc-900" size="18"></i>
+                        <h2 class="text-lg font-black uppercase tracking-widest leading-none text-zinc-900">지적 없는 일주일</h2>
+                    </div>
+                    <span id="focus-bonus-badge" class="hidden px-2 py-0.5 bg-blue-100 text-blue-700 text-[9px] font-bold rounded-full animate-pulse mono border border-blue-200">+5 BONUS</span>
+                </div>
+                <div class="grid grid-cols-5 gap-4 py-3 px-6 bg-white/40 rounded-xl border border-white/70 shadow-inner">
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="focus1" class="hidden music-note-check focus-check" onchange="handleFocusChange(0)">
+                        <label for="focus1" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">MON</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="focus2" class="hidden music-note-check focus-check" onchange="handleFocusChange(1)">
+                        <label for="focus2" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">TUE</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="focus3" class="hidden music-note-check focus-check" onchange="handleFocusChange(2)">
+                        <label for="focus3" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">WED</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="focus4" class="hidden music-note-check focus-check" onchange="handleFocusChange(3)">
+                        <label for="focus4" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">THU</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <input type="checkbox" id="focus5" class="hidden music-note-check focus-check" onchange="handleFocusChange(4)">
+                        <label for="focus5" class="cursor-pointer transition-all duration-300 text-zinc-300 hover:text-[#8ea7bc]"><i data-lucide="music-3" size="40"></i></label>
+                        <span class="day-label mono text-[10px] font-bold text-zinc-400 uppercase">FRI</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 학급 공동 목표 -->
+            <section class="bg-zinc-900 rounded-xl p-4 md:p-5 text-white shadow-xl border-t-4 border-zinc-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-zinc-800/30 rounded-bl-full -mr-8 -mt-8"></div>
+                <div class="relative z-10 space-y-3.5">
+                    <div class="flex flex-col md:flex-row gap-5 items-center">
+                        <div class="flex-1 w-full">
+                            <div class="flex items-baseline gap-3 mb-0.5">
+                                <i data-lucide="target" class="text-blue-500 shrink-0" size="18"></i>
+                                <div class="flex items-baseline gap-2 text-xl md:text-2xl font-black uppercase tracking-tighter text-zinc-500 leading-none">
+                                    <span class="mono text-zinc-400">목표:</span>
+                                    <span id="target-score-input" contenteditable="true" onblur="handleTargetChange()" onkeydown="handleInputEnter(event, 'target')" class="text-amber-500 border-b-2 border-zinc-700 px-2 min-w-[50px] text-center mono">100</span>
+                                </div>
+                            </div>
+                            <div id="editable-goal" contenteditable="true" onblur="saveData()" onkeydown="handleInputEnter(event, 'goal')" class="text-lg md:text-2xl font-bold leading-tight border-b border-zinc-800 pb-1 focus:outline-none placeholder-zinc-700">BLUE LAB 5 공동목표</div>
+                            
+                            <div class="flex items-center gap-3 mt-1.5 px-1 opacity-90">
+                                <i data-lucide="gift" class="text-pink-400 shrink-0 mt-0.5" size="16"></i>
+                                <div class="flex items-baseline gap-2 text-sm md:text-base font-bold tracking-tight text-zinc-500 leading-none">
+                                    <span class="mono text-zinc-400 uppercase shrink-0">REWARD:</span>
+                                    <span id="editable-reward" contenteditable="true" onblur="saveData()" onkeydown="handleInputEnter(event, 'reward')" class="text-zinc-200 border-b-2 border-zinc-800 px-2 min-w-[150px] focus:text-pink-300">보상을 입력하세요</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="flex flex-col items-center gap-1.5 bg-zinc-800/50 p-2 rounded-xl border border-blue-900/30">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <button onclick="changePlusValue(-1)" class="w-7 h-7 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-xs text-blue-400">-</button>
+                                    <span id="plus-display" contenteditable="true" oninput="syncManualInput('plus')" onkeydown="handleInputEnter(event, 'plus')" class="text-2xl font-black mono text-blue-500 min-w-[28px] text-center px-1">0</span>
+                                    <button onclick="changePlusValue(1)" class="w-7 h-7 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-xs text-blue-400">+</button>
+                                </div>
+                                <button onclick="grantPlusPoints()" class="w-full py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-md font-bold text-[10px] uppercase tracking-widest transition-all">부여</button>
+                            </div>
+                            <div class="flex flex-col items-center gap-1.5 bg-zinc-800/50 p-2 rounded-xl border border-red-900/30">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <button onclick="changeMinusValue(-1)" class="w-7 h-7 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-xs text-red-400">-</button>
+                                    <span id="minus-display" contenteditable="true" oninput="syncManualInput('minus')" onkeydown="handleInputEnter(event, 'minus')" class="text-2xl font-black mono text-red-500 min-w-[28px] text-center px-1">0</span>
+                                    <button onclick="changeMinusValue(1)" class="w-7 h-7 rounded bg-zinc-900 flex items-center justify-center hover:bg-zinc-700 font-bold text-xs text-red-400">+</button>
+                                </div>
+                                <button onclick="grantMinusPoints()" class="w-full py-1 bg-red-600 hover:bg-blue-500 text-white rounded-md font-bold text-[10px] uppercase tracking-widest transition-all">차감</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2 pt-1">
+                        <div class="flex justify-between items-baseline px-1">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[9px] font-bold text-zinc-600 mono uppercase tracking-[0.2em]">Milestone Progress</span>
+                                <button onclick="undoAchievement()" class="text-[8px] font-bold text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest underline decoration-zinc-700 mono">[UNDO]</button>
+                            </div>
+                            <span id="gauge-status-label" class="text-2xl md:text-3xl font-black text-amber-400 mono tracking-tighter transition-all duration-500">0 / 100</span>
+                        </div>
+                        <div class="gauge-container w-full h-7 rounded-full overflow-hidden border-2 border-zinc-800">
+                            <div id="goal-gauge" class="gauge-fill h-full rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="flex justify-between items-center text-zinc-500 mono text-[9px] font-bold uppercase tracking-[0.3em] px-2 pt-1.5 border-t border-zinc-200">
+                <div class="flex items-center gap-3"><i data-lucide="disc" size="10"></i><span>BLUE LAB 5 RECORDS</span></div>
+                <span>TYPEWRITER EDITION 2026</span>
+            </footer>
+        </div>
+
+        <!-- 훈장 전용 컬렉터 영역 -->
+        <div id="trophy-collector" class="flex flex-col gap-2 items-center overflow-y-auto max-h-[80vh] px-2"></div>
     </div>
 
     <script>
         lucide.createIcons();
+
+        // 오늘의 단어 관련 변수 및 함수
+        let wordLog = [];
+        let isHistoryOpen = false;
+
+        function handleWordEnter(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const word = e.target.innerText.trim();
+                if (word && word !== "단어를 입력하세요" && word !== "단어 입력") {
+                    addWordToHistory(word);
+                    e.target.blur();
+                }
+            }
+        }
+
+        function addWordToHistory(word) {
+            if (wordLog.length > 0 && wordLog[0] === word) return;
+            wordLog.unshift(word); 
+            if (wordLog.length > 50) wordLog.pop(); 
+            renderWordHistory();
+            saveData();
+        }
+
+        function toggleWordHistory() {
+            const historyPanel = document.getElementById('word-history');
+            const icon = document.getElementById('history-icon');
+            isHistoryOpen = !isHistoryOpen;
+            if (isHistoryOpen) {
+                historyPanel.classList.remove('opacity-0', 'pointer-events-none', 'max-h-0');
+                historyPanel.classList.add('opacity-100', 'max-h-80');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                historyPanel.classList.add('opacity-0', 'pointer-events-none', 'max-h-0');
+                historyPanel.classList.remove('opacity-100', 'max-h-80');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function renderWordHistory() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            if (wordLog.length === 0) {
+                list.innerHTML = '<span class="text-xs text-zinc-400 text-center py-6">저장된 기록이 없습니다</span>';
+                return;
+            }
+            wordLog.forEach((word, idx) => {
+                const item = document.createElement('div');
+                item.className = `text-sm p-2 border-b border-zinc-50 flex items-center gap-3 ${idx === 0 ? 'font-black text-blue-600 bg-blue-50/50 rounded-lg' : 'text-zinc-600'}`;
+                item.innerHTML = `<span class="text-[10px] opacity-40 mono">${wordLog.length - idx}</span> <span class="tracking-tight">${word}</span>`;
+                list.appendChild(item);
+            });
+            if (wordLog.length > 0) document.getElementById('current-word-input').innerText = wordLog[0];
+        }
+
+        function clearWordHistory() {
+            wordLog = [];
+            document.getElementById('current-word-input').innerText = "단어 입력";
+            renderWordHistory();
+            saveData();
+        }
+
+        // 공통 로직 (최적화)
+        function adjustScale() {
+            const scaler = document.getElementById('main-scaler');
+            const viewportHeight = window.innerHeight;
+            const viewportWidth = window.innerWidth;
+            const contentHeight = scaler.offsetHeight;
+            const contentWidth = scaler.offsetWidth;
+            let scaleH = viewportHeight / (contentHeight + 60);
+            let scaleW = viewportWidth / (contentWidth + 100);
+            let finalScale = Math.min(1, scaleH, scaleW);
+            if (finalScale < 0.45) finalScale = 0.45;
+            scaler.style.transform = `scale(${finalScale})`;
+        }
+        window.addEventListener('resize', adjustScale);
+        setTimeout(adjustScale, 100);
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const frequencies = [261.63, 293.66, 329.63, 349.23, 392.00];
@@ -334,6 +458,7 @@
                 else if (type === 'minus') grantMinusPoints();
                 else if (type === 'target' || type === 'reward') handleTargetChange();
                 else if (type === 'goal') saveData();
+                else if (type === 'reward') saveData();
             }
         }
 
@@ -385,21 +510,14 @@
             updateGauge();
         }
 
-        // 취소(UNDO) 로직 추가
         function undoAchievement() {
             if (earnedTrophies <= 0) return;
-            
             const targetInput = document.getElementById('target-score-input');
             let targetValue = parseInt(targetInput.innerText);
             if (isNaN(targetValue) || targetValue <= 0) targetValue = 100;
-
-            // 훈장 개수 줄이고, 이전 소모 점수 복구
             earnedTrophies--;
             currentTotalScore += targetValue;
-            
-            renderTrophies();
-            updateGauge();
-            saveData();
+            renderTrophies(); updateGauge(); saveData();
         }
 
         function triggerCelebration() {
@@ -472,13 +590,14 @@
                 currentTotalScore, earnedTrophies,
                 targetScore: document.getElementById('target-score-input').innerText,
                 peaceChecks: [1,2,3,4,5].map(i => document.getElementById(`peace${i}`).checked),
-                focusChecks: [1,2,3,4,5].map(i => document.getElementById(`focus${i}`).checked)
+                focusChecks: [1,2,3,4,5].map(i => document.getElementById(`focus${i}`).checked),
+                wordLog: wordLog 
             };
-            localStorage.setItem('blueLab5_dashboard_v29_undo', JSON.stringify(data));
+            localStorage.setItem('blueLab5_dashboard_v34_words_fixed', JSON.stringify(data));
         }
 
         function loadData() {
-            const saved = localStorage.getItem('blueLab5_dashboard_v29_undo');
+            const saved = localStorage.getItem('blueLab5_dashboard_v34_words_fixed');
             if (saved) {
                 const data = JSON.parse(saved);
                 if (data.goal) document.getElementById('editable-goal').innerText = data.goal;
@@ -488,8 +607,12 @@
                 earnedTrophies = data.earnedTrophies || 0;
                 if (data.peaceChecks) data.peaceChecks.forEach((c, i) => document.getElementById(`peace${i+1}`).checked = c);
                 if (data.focusChecks) data.focusChecks.forEach((c, i) => document.getElementById(`focus${i+1}`).checked = c);
-                renderTrophies(); updateGauge();
+                wordLog = data.wordLog || [];
+                renderWordHistory();
+                renderTrophies(); 
+                updateGauge();
             }
+            adjustScale();
         }
         window.onload = loadData;
     </script>
